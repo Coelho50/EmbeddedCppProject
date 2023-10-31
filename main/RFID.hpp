@@ -14,6 +14,7 @@ class RFID{
   RFID(byte, byte);
   ~RFID();
 
+  
   void rfid_init(void);
   bool wait_for_card(void);
   bool read_card(void);

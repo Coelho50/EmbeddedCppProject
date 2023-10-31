@@ -17,7 +17,7 @@ MFRC522::MIFARE_Key key;
 
 MFRC522::StatusCode status;
 
-RFID::RFID(SS_PIN, RST_PIN); //Defining pins for SPI communication
+RFID reader(SS_PIN, RST_PIN); //Defining pins for SPI communication
 
 
 //--------------------- setup and loop ------------------------------
@@ -47,7 +47,7 @@ void loop() {
  int opcao = menu();
 
   if (opcao == 0)
-    leituraDados();
+    show_data();
   else if (opcao == 1)
     gravarDados();
   else {
@@ -69,7 +69,7 @@ void loop() {
 //----------------------- functions -----------------------
 
 //faz a leitura dos dados do cartão/tag
-void leituraDados() {
+void show_data() {
   //imprime os detalhes tecnicos do cartão/tag
   mfrc522.PICC_DumpDetailsToSerial(&(mfrc522.uid));
 
@@ -89,9 +89,6 @@ void leituraDados() {
   if (status != MFRC522::STATUS_OK) {
     Serial.print(F("Authentication failed: "));
     Serial.println(mfrc522.GetStatusCodeName(status));
-    digitalWrite(pinVermelho, HIGH);
-    delay(1000);
-    digitalWrite(pinVermelho, LOW);
     return;
   }
 
@@ -100,14 +97,7 @@ void leituraDados() {
   if (status != MFRC522::STATUS_OK) {
     Serial.print(F("Reading failed: "));
     Serial.println(mfrc522.GetStatusCodeName(status));
-    digitalWrite(pinVermelho, HIGH);
-    delay(1000);
-    digitalWrite(pinVermelho, LOW);
     return;
-  } else {
-    digitalWrite(pinVerde, HIGH);
-    delay(1000);
-    digitalWrite(pinVerde, LOW);
   }
 
   Serial.print(F("\nDados bloco ["));
@@ -125,8 +115,8 @@ void leituraDados() {
 //menu para escolha da operação
 int menu() {
   Serial.println(F("\nEscolha uma opção:"));
-  Serial.println(F("0 - Leitura de Dados"));
-  Serial.println(F("1 - Gravação de Dados\n"));
+  Serial.println(F("0 - Read Data"));
+  Serial.println(F("1 - Store data\n"));
 
   //fica aguardando enquanto o usuário nao enviar algum dado
   while (!Serial.available()) {};
@@ -146,7 +136,7 @@ int menu() {
 
 
 //faz a gravação dos dados no cartão/tag
-void gravarDados() {
+void store_data() {
   //imprime os detalhes tecnicos do cartão/tag
   mfrc522.PICC_DumpDetailsToSerial(&(mfrc522.uid));
   // aguarda 30 segundos para entrada de dados via Serial
@@ -198,8 +188,5 @@ void gravarDados() {
     return;
   } else {
     Serial.println(F("MIFARE_Write() success: "));
-    digitalWrite(pinVerde, HIGH);
-    delay(1000);
-    digitalWrite(pinVerde, LOW);
   }
 }
