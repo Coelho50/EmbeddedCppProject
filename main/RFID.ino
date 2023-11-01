@@ -1,5 +1,9 @@
 #include "RFID.hpp"
 
+RFID::RFID(byte SS, byte RST):MFRC522(SS, RST){}
+
+RFID::~RFID(){}
+/*
 RFID::RFID(byte SS, byte RS){
   MFRC522 leitor(SS, RS);
 }
@@ -17,3 +21,4 @@ bool RFID::read_card(){
   bool card = leitor.PICC_ReadCardSerial();
   return card;
 }
+*/

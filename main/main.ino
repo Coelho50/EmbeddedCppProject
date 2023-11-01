@@ -13,9 +13,9 @@
 #define pinVermelho 32
 
 
-MFRC522::MIFARE_Key key;
+RFID::MIFARE_Key key;
 
-MFRC522::StatusCode status;
+RFID::StatusCode status;
 
 RFID reader(SS_PIN, RST_PIN); //Defining pins for SPI communication
 
@@ -35,11 +35,13 @@ void setup() {
 
 void loop() {
 
-  if (!RFID::wait_for_card()) {
+  if (!reader.PICC_IsNewCardPresent()) { //waits for card aproximation
+  Serial.println("Card detected");
     return;
   }
 
-  if (!RFID::read_card()) {
+  if (!reader.PICC_ReadCardSerial()) { //reads card data
+    Serial.println("reading card data");
     return;
   }
 
@@ -55,9 +57,9 @@ void loop() {
     return;
   }
   // instrui o PICC quando no estado ACTIVE a ir para um estado de "parada"
-  mfrc522.PICC_HaltA();
+  reader.PICC_HaltA();
   // "stop" a encriptação do PCD, deve ser chamado após a comunicação com autenticação, caso contrário novas comunicações não poderão ser iniciadas
-  mfrc522.PCD_StopCrypto1();
+  reader.PCD_StopCrypto1();
 */
 
 }  //endloop
@@ -71,7 +73,7 @@ void loop() {
 //faz a leitura dos dados do cartão/tag
 void show_data() {
   //imprime os detalhes tecnicos do cartão/tag
-  mfrc522.PICC_DumpDetailsToSerial(&(mfrc522.uid));
+  reader.PICC_DumpDetailsToSerial(&(reader.uid));
 
   //Prepara a chave - todas as chaves estão configuradas para FFFFFFFFFFFFh (Padrão de fábrica).
   for (byte i = 0; i < 6; i++) key.keyByte[i] = 0xFF;
@@ -85,18 +87,18 @@ void show_data() {
 
 
   //faz a autenticação do bloco que vamos operar
-  status = mfrc522.PCD_Authenticate(MFRC522::PICC_CMD_MF_AUTH_KEY_A, bloco, &key, &(mfrc522.uid));  //line 834 of MFRC522.cpp file
-  if (status != MFRC522::STATUS_OK) {
+  status = reader.PCD_Authenticate(RFID::PICC_CMD_MF_AUTH_KEY_A, bloco, &key, &(reader.uid));  //line 834 of reader.cpp file
+  if (status != RFID::STATUS_OK) {
     Serial.print(F("Authentication failed: "));
-    Serial.println(mfrc522.GetStatusCodeName(status));
+    Serial.println(reader.GetStatusCodeName(status));
     return;
   }
 
   //faz a leitura dos dados do bloco
-  status = mfrc522.MIFARE_Read(bloco, buffer, &tamanho);
-  if (status != MFRC522::STATUS_OK) {
+  status = reader.MIFARE_Read(bloco, buffer, &tamanho);
+  if (status != RFID::STATUS_OK) {
     Serial.print(F("Reading failed: "));
-    Serial.println(mfrc522.GetStatusCodeName(status));
+    Serial.println(reader.GetStatusCodeName(status));
     return;
   }
 
@@ -138,7 +140,7 @@ int menu() {
 //faz a gravação dos dados no cartão/tag
 void store_data() {
   //imprime os detalhes tecnicos do cartão/tag
-  mfrc522.PICC_DumpDetailsToSerial(&(mfrc522.uid));
+  reader.PICC_DumpDetailsToSerial(&(reader.uid));
   // aguarda 30 segundos para entrada de dados via Serial
   Serial.setTimeout(30000L);
   Serial.println(F("Insira os dados a serem gravados com o caractere '#' ao final\n[máximo de 16 caracteres]:"));
@@ -164,12 +166,12 @@ void store_data() {
   Serial.println(str);
 
   //Authenticate é um comando para autenticação para habilitar uma comuinicação segura
-  status = mfrc522.PCD_Authenticate(MFRC522::PICC_CMD_MF_AUTH_KEY_A,
-                                    bloco, &key, &(mfrc522.uid));
+  status = reader.PCD_Authenticate(RFID::PICC_CMD_MF_AUTH_KEY_A,
+                                    bloco, &key, &(reader.uid));
 
-  if (status != MFRC522::STATUS_OK) {
+  if (status != RFID::STATUS_OK) {
     Serial.print(F("PCD_Authenticate() failed: "));
-    Serial.println(mfrc522.GetStatusCodeName(status));
+    Serial.println(reader.GetStatusCodeName(status));
     digitalWrite(pinVermelho, HIGH);
     delay(1000);
     digitalWrite(pinVermelho, LOW);
@@ -178,10 +180,10 @@ void store_data() {
   //else Serial.println(F("PCD_Authenticate() success: "));
 
   //Grava no bloco
-  status = mfrc522.MIFARE_Write(bloco, buffer, MAX_SIZE_BLOCK);
-  if (status != MFRC522::STATUS_OK) {
+  status = reader.MIFARE_Write(bloco, buffer, MAX_SIZE_BLOCK);
+  if (status != RFID::STATUS_OK) {
     Serial.print(F("MIFARE_Write() failed: "));
-    Serial.println(mfrc522.GetStatusCodeName(status));
+    Serial.println(reader.GetStatusCodeName(status));
     digitalWrite(pinVermelho, HIGH);
     delay(1000);
     digitalWrite(pinVermelho, LOW);
