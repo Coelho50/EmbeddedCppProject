@@ -1,72 +1,35 @@
 #include <SPI.h> 
 #include "RFID.hpp"
+#include "PIR.hpp"
 
 //------------ defines, global variables and objects --------------
 
 #define SS_PIN 21
 #define RST_PIN 22
+#define PIR_digital 4
 
 #define SIZE_BUFFER 18
 #define MAX_SIZE_BLOCK 16
 
-#define pinVerde 12
-#define pinVermelho 32
+
+MFRC522::MIFARE_Key key;
+
+MFRC522::StatusCode status;
+
+MFRC522 reader(SS_PIN, RST_PIN); //Defining pins for SPI communication
 
 
-RFID::MIFARE_Key key;
-
-RFID::StatusCode status;
-
-RFID reader(SS_PIN, RST_PIN); //Defining pins for SPI communication
-
-
-//--------------------- setup and loop ------------------------------
+//--------------------- setup ------------------------------
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
   SPI.begin();
 
-  // Mensagens iniciais no serial monitor
-  Serial.println("System initilized");
-  Serial.println();
+  reader.PCD_Init();
+  delay(1000);
+  Serial.println("\nSystem initialized");
+  Serial.println("Entering standby, please aproximate tag to activate motion sensor alarm");
 }
-
-
-
-void loop() {
-
-  if (!reader.PICC_IsNewCardPresent()) { //waits for card aproximation
-  Serial.println("Card detected");
-    return;
-  }
-
-  if (!reader.PICC_ReadCardSerial()) { //reads card data
-    Serial.println("reading card data");
-    return;
-  }
-
-/*  //chama o menu e recupera a opção desejada
- int opcao = menu();
-
-  if (opcao == 0)
-    show_data();
-  else if (opcao == 1)
-    gravarDados();
-  else {
-    Serial.println(F("Opção Incorreta!"));
-    return;
-  }
-  // instrui o PICC quando no estado ACTIVE a ir para um estado de "parada"
-  reader.PICC_HaltA();
-  // "stop" a encriptação do PCD, deve ser chamado após a comunicação com autenticação, caso contrário novas comunicações não poderão ser iniciadas
-  reader.PCD_StopCrypto1();
-*/
-
-}  //endloop
-
-
-
-
 
 //----------------------- functions -----------------------
 
@@ -87,8 +50,8 @@ void show_data() {
 
 
   //faz a autenticação do bloco que vamos operar
-  status = reader.PCD_Authenticate(RFID::PICC_CMD_MF_AUTH_KEY_A, bloco, &key, &(reader.uid));  //line 834 of reader.cpp file
-  if (status != RFID::STATUS_OK) {
+  status = reader.PCD_Authenticate(MFRC522::PICC_CMD_MF_AUTH_KEY_A, bloco, &key, &(reader.uid));  //line 834 of reader.cpp file
+  if (status != MFRC522::STATUS_OK) {
     Serial.print(F("Authentication failed: "));
     Serial.println(reader.GetStatusCodeName(status));
     return;
@@ -96,7 +59,7 @@ void show_data() {
 
   //faz a leitura dos dados do bloco
   status = reader.MIFARE_Read(bloco, buffer, &tamanho);
-  if (status != RFID::STATUS_OK) {
+  if (status != MFRC522::STATUS_OK) {
     Serial.print(F("Reading failed: "));
     Serial.println(reader.GetStatusCodeName(status));
     return;
@@ -112,6 +75,10 @@ void show_data() {
   }
   Serial.println(" ");
 }
+
+
+
+
 
 
 //menu para escolha da operação
@@ -166,29 +133,48 @@ void store_data() {
   Serial.println(str);
 
   //Authenticate é um comando para autenticação para habilitar uma comuinicação segura
-  status = reader.PCD_Authenticate(RFID::PICC_CMD_MF_AUTH_KEY_A,
+  status = reader.PCD_Authenticate(MFRC522::PICC_CMD_MF_AUTH_KEY_A,
                                     bloco, &key, &(reader.uid));
 
-  if (status != RFID::STATUS_OK) {
+  if (status != MFRC522::STATUS_OK) {
     Serial.print(F("PCD_Authenticate() failed: "));
     Serial.println(reader.GetStatusCodeName(status));
-    digitalWrite(pinVermelho, HIGH);
     delay(1000);
-    digitalWrite(pinVermelho, LOW);
     return;
   }
   //else Serial.println(F("PCD_Authenticate() success: "));
 
   //Grava no bloco
   status = reader.MIFARE_Write(bloco, buffer, MAX_SIZE_BLOCK);
-  if (status != RFID::STATUS_OK) {
+  if (status != MFRC522::STATUS_OK) {
     Serial.print(F("MIFARE_Write() failed: "));
     Serial.println(reader.GetStatusCodeName(status));
-    digitalWrite(pinVermelho, HIGH);
     delay(1000);
-    digitalWrite(pinVermelho, LOW);
     return;
+
   } else {
     Serial.println(F("MIFARE_Write() success: "));
   }
 }
+
+
+//--------------    LOOP     ---------------------------
+
+void loop() {
+
+  if ( ! reader.PICC_IsNewCardPresent()) 
+  {
+    return;
+  }
+
+  PIR motion_sensor;
+  bool pir_activated = motion_sensor.pir_init(PIR_digital);
+
+  if(pir_activated){
+    Serial.println("SYSTEM ACTIVATED");
+  }//endif
+
+}  //endloop
+
+
+
