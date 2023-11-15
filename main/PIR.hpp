@@ -3,7 +3,6 @@
 
 #include "peripherals.hpp"
 
-//maybe declare somewhere else??
 typedef enum{
   AUTHORIZED = 0,
   UNAUTHORIZED

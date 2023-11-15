@@ -1,8 +1,4 @@
 
-//yellow = 33
-//green = 32
-//red = 14
-//buzzer = 12
 
 #include "PIR.hpp"
 #include "peripherals.hpp"
@@ -53,7 +49,7 @@ bool PIR::pir_init(byte pin_to_set){
       delay(2000);
       Serial.println("System activation aborted, entering standby");
       return confirmation;
-      break;     //break not working??
+      break;    
     }//endif
 
   }//endwhile
@@ -75,7 +71,7 @@ PRESENCE PIR::motion_alarm(){
 
     if (digitalRead(4) == HIGH){
       Serial.print("Movement detected\n");
-      while (time <=1000){ //starts counter waiting for card to authorize entrance
+      while (time <=1000){                                               //starts counter waiting for card to authorize entrance
         if (reader.PICC_IsNewCardPresent()){
           Serial.print("\nEntrance authorized, deactivatin motion sensor");
           LEDS.deactivate_green();
