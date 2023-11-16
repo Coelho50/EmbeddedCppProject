@@ -1,19 +1,20 @@
 
+//#define yellow 33
+//#define green  32 
+//#define red    14 
+//#define buzzer 12
+
+
 #ifndef PERIPHERALS_HPP
 #define PERIPHERALS_HPP
 
-
+#include <string>
 
 class Peripherals{
   public:
-    //Peripherals(void);
-    //~Peripherals(void);
-    void peripherals_init(void);
-    friend void standby(void);
-    void activate_green(void);
-    void deactivate_green(void);
-    void aborted_activation(void);
-    void alarm_on(void);
+    virtual void init();
+    virtual void on(void);
+    virtual void off(void);
 };
 
 
