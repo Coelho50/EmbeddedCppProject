@@ -8,15 +8,15 @@ typedef enum{
   UNAUTHORIZED
 } PRESENCE;
 
-
+template<typename T>
 class PIR{  
   public:
     Peripherals LEDS;
-    byte digital_pin;
+    T digital_pin;
 
     PIR();
     ~PIR();
-    bool pir_init(byte);
+    bool pir_init(T);
     PRESENCE motion_alarm();
 };
 

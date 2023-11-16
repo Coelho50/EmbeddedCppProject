@@ -12,7 +12,7 @@ PIR::~PIR(){}
 
 
 
-bool PIR::pir_init(byte pin_to_set){
+bool PIR::pir_init(T pin_to_set){
   bool confirmation = false;
 
   digital_pin = pin_to_set; //------> setting PIRs digital pin
