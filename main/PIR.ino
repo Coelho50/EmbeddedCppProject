@@ -9,11 +9,11 @@ Yellow yellow;
 Green green;
 Red red;
 Buzzer buzzer;
-Peripherals *ptr; //using polimorfism to call the functions of the LEDs
+Peripherals *ptr;         //using polimorfism to call the functions of the LEDs
 
 
 template<typename T>
-bool PIR<T>::pir_init(T pin_to_set){
+bool PIR<T>::pir_init(T pin_to_set){    //initializes motion sensor and all peripherals
   bool confirmation = false;
 
   ptr = &yellow; ptr->init();
@@ -22,18 +22,18 @@ bool PIR<T>::pir_init(T pin_to_set){
   ptr = &buzzer; ptr->init();
 
 
-  digital_pin = pin_to_set; //------> setting PIRs digital pin
+  digital_pin = pin_to_set;                 //setting PIRs digital pin
 
   Serial.println("\nActivating alarm in 120 seconds");
   Serial.println("To cancel this action, hold your tag in front of the reader for 1 full second.\n");
 
-  delay(1000); //delay used so that the initialization isn't immediatly cancelled
+  delay(1000);            //delay used so that the initialization isn't immediatly cancelled
 
   int i = 120; 
-  //for loop not working?
+  //for loop not working
 
-  while (i>0){   //waits 120seconds before activating motion sensor (for loop doesnt work while using MFRC library)
-    i--;
+  while (i>0){                                 //waits 120seconds before activating motion sensor (for loop doesnt work while using MFRC library)
+    i--;  
 
     if (i%2 == 0){ //blinks green LED
       ptr = &green; 
@@ -47,13 +47,13 @@ bool PIR<T>::pir_init(T pin_to_set){
     Serial.println(String("Seconds remaining: ") + i); //Prints remaining time every 10 seconds
     }//endif
 
+    delay(1000);    //-----------> DEACTIVATE FOR TESTING
 
+    
 
-    //delay(1000);    //-----------> DEACTIVATE FOR TESTING
-
-    if (reader.PICC_IsNewCardPresent()){ //makes so the activation gets cancelled if a card/tag is detected
+    if (reader.PICC_IsNewCardPresent()){    //makes so the activation gets cancelled if a card/tag is detected
       ptr = &green;
-      ptr->off(); //making sure the green LED is deactivated
+      ptr->off();                           //making sure the green LED is deactivated
       Serial.println("Aborting system activation");
       delay(2000);
       Serial.println("System activation aborted, entering standby");
@@ -87,35 +87,37 @@ PRESENCE PIR<T>::motion_alarm(){
           ptr->off();
           presence = AUTHORIZED;
           delay(1000);
-          return presence;
+          return presence;                //returns AUTHORIZED
         } 
-        if (time%100 == 0){
+        if (time%100 == 0){               //prints remaining time to serial every 10 seconds
           int _time = 10 - time/100;
           Serial.print(_time);
           Serial.print(", ");
         }
         time++;
       }//endwhile
+
       if (presence == UNAUTHORIZED){
         Serial.println("\nUNAUTHORIZED ENTRANCE DETECTED");
-        this->alarm_on();
-        return presence;
+        this->alarm_on();                 //sounds the alarm
+        return presence;                  //returns UNAUTHORIZED
       }//endif
     }//endif
   }//endwhile
 }//endfunction
 
-void standby(){
-  ptr = &yellow; ptr->on();
-  Serial.print("sup standby");
+void standby(){                           //only yellow LED on
+  ptr = &red; ptr->init();                 //necessary for correcting red light bug
+  ptr = &yellow; ptr->init();
+  ptr->on();
   delay(1000);
-  while(!reader.PICC_IsNewCardPresent());
-  ptr = &yellow; ptr->off();
+  while(!reader.PICC_IsNewCardPresent());   //waits for card/tag aproximation
+  ptr = &yellow; ptr->off();                //disables yellow LED
 }
 
 template<typename T>
-void PIR<T>::alarm_on(){
-  while(!reader.PICC_IsNewCardPresent()){
+void PIR<T>::alarm_on(){                //sounds the alarm
+  while(!reader.PICC_IsNewCardPresent()){   //maintains loop while a card/tag isnt aproximated
     ptr = &yellow; ptr->on();
     ptr = &green; ptr->on();
     ptr = &red; ptr->on();

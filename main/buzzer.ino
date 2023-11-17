@@ -1,6 +1,6 @@
 #include "buzzer.hpp"
 
-#define buzzer  32 
+#define buzzer  12 
 
 
 void Buzzer::init(){

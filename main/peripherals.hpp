@@ -10,7 +10,7 @@
 
 #include <string>
 
-class Peripherals{
+class Peripherals{    //base class to be inherited by all peripherals
   public:
     virtual void init();
     virtual void on(void);
