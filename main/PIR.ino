@@ -47,9 +47,9 @@ bool PIR<T>::pir_init(T pin_to_set){    //initializes motion sensor and all peri
     Serial.println(String("Seconds remaining: ") + i); //Prints remaining time every 10 seconds
     }//endif
 
-    delay(1000);    //-----------> DEACTIVATE FOR TESTING
+    //delay(1000);    //-----------> DEACTIVATE FOR TESTING
 
-    
+
 
     if (reader.PICC_IsNewCardPresent()){    //makes so the activation gets cancelled if a card/tag is detected
       ptr = &green;
