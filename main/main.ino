@@ -1,14 +1,5 @@
 //------------ includes ----------------
-
-#include <SPI.h> //used for communication with RFID
-
-#include <MFRC522.h>  //RFID library
-#include <MFRC522Extended.h>
-#include <deprecated.h>
-#include <require_cpp11.h>
-
-#include "PIR.hpp"   //classes made
-#include "peripherals.hpp"
+#include "header.hpp"
 
 //------------ defines, global variables and objects --------------
 
@@ -34,7 +25,6 @@ MFRC522 reader(SS_PIN, RST_PIN); //declaring RFID and defining pins for SPI comm
 
 PIR <byte> motion_sensor;
 
-
 //--------------------- setup ------------------------------
 
 void setup() {
@@ -46,7 +36,7 @@ void setup() {
   delay(1000);
 
   Serial.println("\nSystem initialized");
-  Serial.println("Entering standby, please aproximate tag to activate motion sensor alarm");
+  Serial.println("Entering standby...");
 
   
 }

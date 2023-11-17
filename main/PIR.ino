@@ -10,6 +10,7 @@ Green green;
 Red red;
 Buzzer buzzer;
 Peripherals *ptr;         //using polimorfism to call the functions of the LEDs
+List log_list;
 
 
 template<typename T>
@@ -47,14 +48,14 @@ bool PIR<T>::pir_init(T pin_to_set){    //initializes motion sensor and all peri
     Serial.println(String("Seconds remaining: ") + i); //Prints remaining time every 10 seconds
     }//endif
 
-    //delay(1000);    //-----------> DEACTIVATE FOR TESTING
+    delay(1000);    //-----------> DEACTIVATE FOR TESTING
 
 
 
     if (reader.PICC_IsNewCardPresent()){    //makes so the activation gets cancelled if a card/tag is detected
       ptr = &green;
       ptr->off();                           //making sure the green LED is deactivated
-      Serial.println("Aborting system activation");
+      Serial.println("\nAborting system activation");
       delay(2000);
       Serial.println("System activation aborted, entering standby");
       return confirmation;
@@ -86,6 +87,8 @@ PRESENCE PIR<T>::motion_alarm(){
           ptr = &green;
           ptr->off();
           presence = AUTHORIZED;
+
+          log_list.insert("Authorized entrance detected");
           delay(1000);
           return presence;                //returns AUTHORIZED
         } 
@@ -99,6 +102,7 @@ PRESENCE PIR<T>::motion_alarm(){
 
       if (presence == UNAUTHORIZED){
         Serial.println("\nUNAUTHORIZED ENTRANCE DETECTED");
+        log_list.insert("UNAUTHORIZED ENTRANCE DETECTED");
         this->alarm_on();                 //sounds the alarm
         return presence;                  //returns UNAUTHORIZED
       }//endif
@@ -110,8 +114,19 @@ void standby(){                           //only yellow LED on
   ptr = &red; ptr->init();                 //necessary for correcting red light bug
   ptr = &yellow; ptr->init();
   ptr->on();
+  Serial.println("\nStanby mode on.");
+  Serial.println("Aproximate tag/card to activate motion sensor alarm");
+  Serial.println("or enter any character in the serial monitor to print log.");
   delay(1000);
-  while(!reader.PICC_IsNewCardPresent());   //waits for card/tag aproximation
+  while(!reader.PICC_IsNewCardPresent()){   //waits for card/tag aproximation
+    if (Serial.available()){
+      log_list.printLog();
+      while(Serial.available()) {     //clears serial entrys 
+        if(Serial.read() == '\n') break; 
+        Serial.read();
+      }//endwhile
+    }//endif
+  }//endwhile
   ptr = &yellow; ptr->off();                //disables yellow LED
 }
 
@@ -132,6 +147,6 @@ void PIR<T>::alarm_on(){                //sounds the alarm
   }
   
   Serial.println("\nAlarm deactivated by card");
-  Serial.println("Entering stanby mode");
+  Serial.println("Entering stanby mode...");
   delay(2000);
 }

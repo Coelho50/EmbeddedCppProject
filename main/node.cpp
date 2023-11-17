@@ -2,13 +2,14 @@
 #include "node.hpp"
 
 
-Node::Node(std::string _log, Node* _next){
-  log = _log;
+Node::Node(std::string _log, Node* _next, int _number){
   next = _next;
+  number = _number;
+  log = number + _log;
 }
 
 void Node::setLog(std::string _log){
-  log = _log;
+  log = number + _log;
 }
 
 std::string Node::getLog(){

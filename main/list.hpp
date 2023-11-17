@@ -7,6 +7,7 @@
 class List {
   public:
     Node* first;
+    int nodes;    //counts the total of nodes in the list
 
     List();
     ~List();
