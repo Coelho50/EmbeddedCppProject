@@ -2,6 +2,10 @@
 #define LIST_HPP
 
 #include "node.hpp"
+#include <iostream>
+#include <Arduino.h>
+#include <chrono>
+#include <ctime>
 
 
 class List {
@@ -11,6 +15,7 @@ class List {
 
     List();
     ~List();
+    std::string time_to_string(int, int, int, int, int, int);
     void insert(std::string);
     void printLog();
 };

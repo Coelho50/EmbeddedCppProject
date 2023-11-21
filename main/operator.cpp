@@ -1,7 +1,7 @@
 
 #include "operator.hpp"
 
-std::string operator+(int n, std::string data){   
+std::string operator%(int n, std::string data){   
   std::string complements = ". ";
   std::string str_n = std::to_string(n);
 

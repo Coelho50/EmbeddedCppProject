@@ -9,8 +9,9 @@
 #define PERIPHERALS_HPP
 
 #include <string>
+#include <Arduino.h>
 
-class Peripherals{    //base class to be inherited by all peripherals
+class Peripherals{    //virtual base class to be inherited by all peripherals
   public:
     virtual void init();
     virtual void on(void);

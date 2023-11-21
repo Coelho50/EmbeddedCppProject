@@ -1,8 +1,6 @@
 #include <string>
 
-
 #include "list.hpp"
-#include <iostream>
 
 List::List(){     //creates an empty list
   first = 0;
@@ -21,21 +19,48 @@ List::~List(){    //destroy the whole list
   nodes = 0;
 }//endfunc
 
+
+std::string List::time_to_string(int y, int m, int d, int h, int min, int s){
+  std::string _y = std::to_string(y);
+  std::string _m = std::to_string(m); 
+  std::string _d = std::to_string(d);
+  std::string _h = std::to_string(h);
+  std::string _min = std::to_string(min); 
+  std::string _s = std::to_string(s);
+
+  std::string str_time = "[" + _d + "/" + _m + "/" + _y + " - " + _h + ":" + _min + ":" + _s + "]" + " ";
+  return str_time;
+}
+
 void List::insert(std::string newLog){    //saves a new log into the list
+
+  auto currentTime = std::chrono::system_clock::now();  // Get the current system time
+  std::time_t time = std::chrono::system_clock::to_time_t(currentTime);   // Convert the system time to a time_t
+  std::tm* localTime = std::localtime(&time);   // Convert the time_t to a tm structure for access
+
+  int year =  localTime->tm_year + 1900;
+  int month =  localTime->tm_mon + 1;
+  int day =  localTime->tm_mday;
+  int hour =  localTime->tm_hour;
+  int min =  localTime->tm_min;
+  int sec =  localTime->tm_sec;
+
+  std::string current_time = this->time_to_string(year, month, day, hour, min, sec);
+
   Node* aux1 = first;
   Node* aux2 = first;
 
   nodes++;
-  if (first == 0){
-     first = new Node(newLog, 0, nodes);     //creates a new log in case there were'nt any
-  }//endif
 
-  else {                      //creates a new log entry and adds to the end of the list
-     while (aux2 != 0) {
-        aux1 = aux2; 
-        aux2 = aux1->getNext();
+  if (first == 0){
+    first = new Node(newLog, 0, nodes, current_time);     //creates a new log in case there were'nt any
   }//endif
-     aux1->setNext(new Node(newLog, 0, nodes)); //last log always points to 0
+  else {                      //creates a new log entry and adds to the end of the list
+    while (aux2 != 0) {
+      aux1 = aux2; 
+      aux2 = aux1->getNext();
+    }//endwhile
+    aux1->setNext(new Node(newLog, 0, nodes, current_time)); //last log always points to 0
   }
 }
 

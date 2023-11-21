@@ -1,5 +1,7 @@
 //------------ includes ----------------
 #include "header.hpp"
+#include <chrono>
+#include <ctime>
 
 //------------ defines, global variables and objects --------------
 
@@ -34,6 +36,8 @@ void setup() {
   reader.PCD_Init();  //initializes RFID
 
   delay(1000);
+  
+  auto currentTime = std::chrono::system_clock::now();
 
   Serial.println("\nSystem initialized");
   Serial.println("Entering standby...");

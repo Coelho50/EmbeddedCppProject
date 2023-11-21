@@ -2,14 +2,27 @@
 #include "node.hpp"
 
 
-Node::Node(std::string _log, Node* _next, int _number){
+Node::Node(std::string _log, Node* _next, int _number, std::string _time){
   next = _next;
   number = _number;
-  log = number + _log;
+  time = _time;
+  log = time + number % _log;
 }
 
+
+void Node::setTime(std::string _time){
+  time = _time;
+}
+
+std::string Node::getTime(){
+  return time;
+}
+
+
 void Node::setLog(std::string _log){
-  log = number + _log;
+  std::string half_log = number % _log;
+  log = time;
+  log.append(half_log);  
 }
 
 std::string Node::getLog(){

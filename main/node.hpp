@@ -8,12 +8,18 @@
 class Node {
   public:
     std::string log;
+    std::string time;
     int number;   //associates a order od creation for every node
     Node* next;
 
-    Node(std::string, Node*, int);
+    Node(std::string, Node*, int, std::string);
+
+    void setTime(std::string);
+    std::string getTime(void);
+
     void setLog(std::string);
     std::string getLog(void);
+
     void setNext(Node*);
     Node* getNext();
 };
