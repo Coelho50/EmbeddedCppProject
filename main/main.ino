@@ -53,8 +53,8 @@ void loop() {
 
   bool pir_activated = motion_sensor.pir_init(PIR_digital); //initializes PIR motion sensor
 
-  if(!pir_activated){ //in case the motion sensor gets deactivated, the code returns to the start of the loop
-    return;
+  if(!pir_activated){ 
+    return; //returns to the start of the loop
   }//endif
 
   Serial.println("SYSTEM ACTIVATED");

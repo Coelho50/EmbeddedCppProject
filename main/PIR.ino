@@ -114,13 +114,18 @@ void standby(){                           //only yellow LED on
   ptr = &red; ptr->init();                 //necessary for correcting red light bug
   ptr = &yellow; ptr->init();
   ptr->on();
-  Serial.println("\nStanby mode on.");
+  Serial.println("");
+  Serial.println("Stanby mode on.");
   Serial.println("Aproximate tag/card to activate motion sensor alarm");
-  Serial.println("or enter any character in the serial monitor to print log.");
+  Serial.println("or enter one of the following characters for log options:");
+  Serial.println("0 - Clear log entries list");
+  Serial.println("1 - Print all log entries");
+  Serial.println("2 - Print entries from a specific time window");
   delay(1000);
   while(!reader.PICC_IsNewCardPresent()){   //waits for card/tag aproximation
     if (Serial.available()){
-      log_list.printLog();
+      int cmd = Serial.read();
+      log_list.printLog(cmd);
       while(Serial.available()) {     //clears serial entrys 
         if(Serial.read() == '\n') break; 
         Serial.read();
