@@ -51,9 +51,9 @@ void loop() {
 
   standby(); //Waits for card aproximation
 
-  bool pir_activated = motion_sensor.pir_init(PIR_digital); //initializes PIR motion sensor
+  bool pir_activated = motion_sensor.pir_init(PIR_digital);   //initializes PIR motion sensor
 
-  if(!pir_activated){ //in case the motion sensor gets deactivated, the code returns to the start of the loop
+  if(!pir_activated){                                             //in case the motion sensor gets deactivated, the code returns to the start of the loop
     return;
   }//endif
 
