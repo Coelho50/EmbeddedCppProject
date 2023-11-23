@@ -48,7 +48,7 @@ bool PIR<T>::pir_init(T pin_to_set){    //initializes motion sensor and all peri
     Serial.println(String("Seconds remaining: ") + i); //Prints remaining time every 10 seconds
     }//endif
 
-    //delay(1000);    //-----------> DEACTIVATE FOR TESTING
+    delay(1000);    //-----------> DEACTIVATE FOR TESTING
 
 
 

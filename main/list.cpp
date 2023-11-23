@@ -2,6 +2,9 @@
 
 #include "list.hpp"
 
+#define first_month 11
+#define first_day   21
+
 List::List(){     //creates an empty list
   first = 0;
   nodes = 0;
@@ -38,12 +41,12 @@ void List::insert(std::string newLog){    //saves a new log into the list
   std::time_t time = std::chrono::system_clock::to_time_t(currentTime);   // Convert the system time to a time_t
   std::tm* localTime = std::localtime(&time);   // Convert the time_t to a tm structure for access
 
-  int year =  localTime->tm_year + 1900;
-  int month =  localTime->tm_mon + 1;
-  int day =  localTime->tm_mday;
-  int hour =  localTime->tm_hour;
-  int min =  localTime->tm_min;
-  int sec =  localTime->tm_sec;
+  int year =  localTime->tm_year + 1953;
+  int month =  localTime->tm_mon + first_month;
+  int day =  localTime->tm_mday + first_day;
+  int hour =  localTime->tm_hour + 15;
+  int min =  localTime->tm_min + 32;
+  int sec =  localTime->tm_sec + 17;
 
   std::string current_time = this->time_to_string(year, month, day, hour, min, sec);
 
