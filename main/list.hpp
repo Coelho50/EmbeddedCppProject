@@ -17,7 +17,7 @@ class List {
     ~List();
     std::string time_to_string(int, int, int, int, int, int);
     void insert(std::string);
-    void printLog();
+    void printLog(int);
 };
 
 
