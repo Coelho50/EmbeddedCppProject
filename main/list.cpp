@@ -42,10 +42,10 @@ void List::insert(std::string newLog){    //saves a new log into the list
   std::tm* localTime = std::localtime(&time);   // Convert the time_t to a tm structure for access
 
   int year =  localTime->tm_year + 1953;
-  int month =  localTime->tm_mon + first_month;
-  int day =  localTime->tm_mday + first_day;
-  int hour =  localTime->tm_hour + 15;
-  int min =  localTime->tm_min + 32;
+  int month =  localTime->tm_mon + 12;
+  int day =  localTime->tm_mday + 5;
+  int hour =  localTime->tm_hour + 12;
+  int min =  localTime->tm_min + 17;
   int sec =  localTime->tm_sec + 17;
 
   std::string current_time = this->time_to_string(year, month, day, hour, min, sec);
