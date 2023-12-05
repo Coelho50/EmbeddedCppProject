@@ -15,9 +15,9 @@ class List {
 
     List();
     ~List();
-    std::string time_to_string(int, int, int, int, int, int);
-    void insert(std::string);
-    void printLog(int);
+    std::string time_to_string(int, int, int, int, int, int); //converts system time to a string
+    void insert(std::string); //inserts a new node on list
+    void printLog(int); //prints full list
 };
 
 

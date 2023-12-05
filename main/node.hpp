@@ -9,7 +9,7 @@ class Node {
   public:
     std::string log;
     std::string time;
-    int number;   //associates a order od creation for every node
+    int number;   //associates an order of creation for every node
     Node* next;
 
     Node(std::string, Node*, int, std::string);

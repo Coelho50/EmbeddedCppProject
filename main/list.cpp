@@ -70,16 +70,17 @@ void List::insert(std::string newLog){    //saves a new log into the list
 void List::printLog(int cmd) {
   if (cmd == 1){
     Node* aux1 = first;
-    if (first == 0){
+    if (first == 0){                                    //prints only the message below in case of empty list
       std::cout << "No logs available" << std::endl;
       return;
     }
+
     std::cout << " " << std::endl;
     std::cout <<"---------- Log entries -------------" << std::endl;
     while (aux1 != 0){
-      std::string aux2 = aux1->getLog();
+      std::string aux2 = aux1->getLog();            //points to node to be printed
       std::cout << aux2 << std::endl;
-      aux1 = aux1->getNext();
+      aux1 = aux1->getNext();                       //points to the next node
     }//endwhile
     std::cout << "Total of entries: " << nodes << std::endl; 
     std::cout <<"------------------------------------" << std::endl;
@@ -90,7 +91,8 @@ void List::printLog(int cmd) {
         }
         this->~List();
         std::cout << "Log list cleared" << std::endl;
-    } else if (cmd == 3){
+
+    } else if (cmd == 3){     //prints list and deletes it afterwards
       Node* aux1 = first;
       if (first == 0){
         std::cout << "No logs available" << std::endl;
